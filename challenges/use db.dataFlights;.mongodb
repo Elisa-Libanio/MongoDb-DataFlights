@@ -1,0 +1,46 @@
+use dataFlights;
+
+db.voos.count({
+    "aeroportoDestino.pais": { $ne: "ESTADOS UNIDOS" },
+   });
+db.voos.count({
+    "aeroportoDestino.pais": { $in: ["BRASIL","ARGENTINA","CHILE"]},
+   });
+
+   db.voos.count({
+    "aeroportoOrigem.pais": {
+      $ne: "BRASIL",
+    },
+  });
+
+db.voos.find({
+    "aeroportoOrigem.pais": { $ne: "BRASIL" },
+  }).count();
+
+db.voos.findOne(
+    { litrosCombustivel: {$gte:1000, $exists: true}
+       },
+    { _id: 0, vooId: 1, litrosCombustivel:1 },
+  );
+db.voos.find({
+  $and: [
+    { litrosCombustivel: { $exists: true } },
+    { litrosCombustivel: {
+      $not: { $gt: 1000 },
+    } },
+  ],
+}, {
+  _id: 0,
+  vooId: 1,
+  litrosCombustivel: 1,
+}).limit(1);
+
+db.voos.findOne(
+  {
+    $and: [
+      { litrosCombustivel: { $gt: 1000 } },
+      { litrosCombustivel: { $exists: true } },
+    ],
+  },
+  { _id: false, vooId: true, litrosCombustivel: true },
+);
